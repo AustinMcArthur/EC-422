@@ -1,0 +1,195 @@
+Series             Obs       Mean        Std Error      Minimum       Maximum
+LREM25TTUSM156S      515         77.81          2.46         71.12         81.82
+CES0500000003        166         23.94          2.23         20.04         28.32
+USREC               1440          0.23          0.42          0.00          1.00
+
+## SC1. Expected Supplementary Card (# ....) Here
+>>>>g<<<<
+## I2. Expected Instruction Here
+>>>>   #<<<<
+## I2. Expected Instruction Here
+>>>>   #<<<<
+## I2. Expected Instruction Here
+>>>>   #<<<<
+Series             Obs       Mean        Std Error      Minimum       Maximum
+LREM25TTUSM156S      515         77.81          2.46         71.12         81.82
+CES0500000003        166         23.94          2.23         20.04         28.32
+USREC               1440          0.23          0.42          0.00          1.00
+WAGESYOY             154          2.47          0.52          1.50          3.57
+EPOP                 515         77.81          2.46         71.12         81.82
+
+## I2. Expected Instruction Here
+>>>>   #<<<<
+## I2. Expected Instruction Here
+>>>>   #<<<<
+## I2. Expected Instruction Here
+>>>>#<<<<
+## I2. Expected Instruction Here
+>>>>#<<<<
+## I2. Expected Instruction Here
+>>>>#<<<<
+## SC1. Expected Supplementary Card (# ....) Here
+>>>>g<<<<
+## I2. Expected Instruction Here
+>>>>   #<<<<
+## I2. Expected Instruction Here
+>>>>#<<<<
+
+Linear Regression - Estimation by Least Squares
+Dependent Variable WAGESYOY
+Monthly Data From 2007:03 To 2019:11
+Usable Observations                       153
+Degrees of Freedom                        151
+Centered R^2                        0.6292037
+R-Bar^2                             0.6267481
+Uncentered R^2                      0.9841637
+Mean of Dependent Variable       2.4656231001
+Std Error of Dependent Variable  0.5225025347
+Standard Error of Estimate       0.3192195156
+Sum of Squared Residuals         15.387065974
+Regression F(1,151)                  256.2316
+Significance Level of F             0.0000000
+Log Likelihood                       -41.3839
+Durbin-Watson Statistic                0.3502
+
+    Variable                        Coeff      Std Error      T-Stat      Signif
+************************************************************************************
+1.  Constant                     -15.71608790   1.13613630    -13.83292  0.00000000
+2.  EPOP                           0.23501520   0.01468181     16.00724  0.00000000
+
+## SX4. Expected Blank or Tab Here
+>>>> on wage changes")1<<<<
+## OP3. This Instruction Does Not Have An Option SPG
+>>>>spgraph<<<<
+## SC1. Expected Supplementary Card (# ....) Here
+>>>>s<<<<
+## I2. Expected Instruction Here
+>>>>   #<<<<
+## I2. Expected Instruction Here
+>>>>#<<<<
+
+Linear Regression - Estimation by Least Squares
+Dependent Variable WAGESYOY
+Monthly Data From 2007:03 To 2019:11
+Usable Observations                       153
+Degrees of Freedom                        151
+Centered R^2                        0.6292037
+R-Bar^2                             0.6267481
+Uncentered R^2                      0.9841637
+Mean of Dependent Variable       2.4656231001
+Std Error of Dependent Variable  0.5225025347
+Standard Error of Estimate       0.3192195156
+Sum of Squared Residuals         15.387065974
+Regression F(1,151)                  256.2316
+Significance Level of F             0.0000000
+Log Likelihood                       -41.3839
+Durbin-Watson Statistic                0.3502
+
+    Variable                        Coeff      Std Error      T-Stat      Signif
+************************************************************************************
+1.  Constant                     -15.71608790   1.13613630    -13.83292  0.00000000
+2.  EPOP                           0.23501520   0.01468181     16.00724  0.00000000
+
+
+Linear Regression - Estimation by Least Squares
+Dependent Variable WAGESYOY
+Monthly Data From 2007:03 To 2019:11
+Usable Observations                       153
+Degrees of Freedom                        151
+Centered R^2                        0.6292037
+R-Bar^2                             0.6267481
+Uncentered R^2                      0.9841637
+Mean of Dependent Variable       2.4656231001
+Std Error of Dependent Variable  0.5225025347
+Standard Error of Estimate       0.3192195156
+Sum of Squared Residuals         15.387065974
+Regression F(1,151)                  256.2316
+Significance Level of F             0.0000000
+Log Likelihood                       -41.3839
+Durbin-Watson Statistic                0.3502
+
+    Variable                        Coeff      Std Error      T-Stat      Signif
+************************************************************************************
+1.  Constant                     -15.71608790   1.13613630    -13.83292  0.00000000
+2.  EPOP                           0.23501520   0.01468181     16.00724  0.00000000
+
+## I2. Expected Instruction Here
+>>>>#<<<<
+## SC1. Expected Supplementary Card (# ....) Here
+>>>>s<<<<
+
+Linear Regression - Estimation by Least Squares
+Dependent Variable WAGESYOY
+Monthly Data From 2007:03 To 2019:11
+Usable Observations                       153
+Degrees of Freedom                        151
+Centered R^2                        0.6292037
+R-Bar^2                             0.6267481
+Uncentered R^2                      0.9841637
+Mean of Dependent Variable       2.4656231001
+Std Error of Dependent Variable  0.5225025347
+Standard Error of Estimate       0.3192195156
+Sum of Squared Residuals         15.387065974
+Regression F(1,151)                  256.2316
+Significance Level of F             0.0000000
+Log Likelihood                       -41.3839
+Durbin-Watson Statistic                0.3502
+
+    Variable                        Coeff      Std Error      T-Stat      Signif
+************************************************************************************
+1.  Constant                     -15.71608790   1.13613630    -13.83292  0.00000000
+2.  EPOP                           0.23501520   0.01468181     16.00724  0.00000000
+
+
+Linear Regression - Estimation by Least Squares
+Dependent Variable WAGESYOY
+Monthly Data From 2007:03 To 2019:11
+Usable Observations                       153
+Degrees of Freedom                        151
+Centered R^2                        0.6292037
+R-Bar^2                             0.6267481
+Uncentered R^2                      0.9841637
+Mean of Dependent Variable       2.4656231001
+Std Error of Dependent Variable  0.5225025347
+Standard Error of Estimate       0.3192195156
+Sum of Squared Residuals         15.387065974
+Regression F(1,151)                  256.2316
+Significance Level of F             0.0000000
+Log Likelihood                       -41.3839
+Durbin-Watson Statistic                0.3502
+
+    Variable                        Coeff      Std Error      T-Stat      Signif
+************************************************************************************
+1.  Constant                     -15.71608790   1.13613630    -13.83292  0.00000000
+2.  EPOP                           0.23501520   0.01468181     16.00724  0.00000000
+
+
+Linear Regression - Estimation by Least Squares
+Dependent Variable WAGESYOY
+Monthly Data From 2007:03 To 2019:11
+Usable Observations                       153
+Degrees of Freedom                        150
+Centered R^2                        0.7437385
+R-Bar^2                             0.7403216
+Uncentered R^2                      0.9890553
+Mean of Dependent Variable       2.4656231001
+Std Error of Dependent Variable  0.5225025347
+Standard Error of Estimate       0.2662602160
+Sum of Squared Residuals         10.634175390
+Regression F(2,150)                  217.6697
+Significance Level of F             0.0000000
+Log Likelihood                       -13.1207
+Durbin-Watson Statistic                0.5521
+
+    Variable                        Coeff      Std Error      T-Stat      Signif
+************************************************************************************
+1.  Constant                     -13.99920509   0.97056974    -14.42370  0.00000000
+2.  EPOP                           0.21913978   0.01239860     17.67456  0.00000000
+3.  SAMP                          -0.55385711   0.06764335     -8.18790  0.00000000
+
+## P2. Second Half of Parameter Pair Is Absent
+>>>>wagesyoy smpl=samp<<<<
+## I2. Expected Instruction Here
+>>>>#<<<<
+## I2. Expected Instruction Here
+>>>>#<<<<
