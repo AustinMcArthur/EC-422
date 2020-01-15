@@ -1,0 +1,66 @@
+
+cal(m) 1900:1
+all 2025:12
+data(format=fred) * * LREM25TTUSM156S CES0500000003 USREC
+
+table(picture="*.##")
+
+set wagesyoy = (log(CES0500000003) - log(CES0500000003{12}))*100
+set EPOP = LREM25TTUSM156S
+
+
+compute startdate = 2007:3
+compute enddate = 2019:11
+
+
+graph(header="Wages change year-over-year by %") 1
+#wagesyoy startdate enddate
+
+compute startdate = 2007:3
+compute enddate = 2019:11
+
+graph(header="Employment / population as a percent") 1
+#EPOP startdate enddate
+
+linreg wagesyoy * * resids
+# constant EPOP
+prj fitted
+
+*Both terms are very statistically significant
+
+scatter(style=dots, header="WAGES and EPOP During Expansions (Mar '07 - Nov '19)", $
+vlabel="Y-o-Y Change in Avg Wages (%)", hlabel="Employment-to-Population Ratio (%)", $
+vmax=4, overlay=line, ovsame, ovcount=1) 2
+# EPOP wagesyoy
+# EPOP fitted
+
+scatter(style=dots, header="WAGES actual", overlay=line, ovsame, ovcount=1) 1
+# EPOP wagesyoy
+
+
+set samp = %if(usrec>0,0,1)
+
+linreg (smpl=samp) wagesyoy * * resids 
+# constant EPOP
+prj fitted1
+
+scatter(smpl=samp,style=dots, header="WAGES and EPOP During Expansions (Mar '07 - Nov '19)", $
+vlabel="Y-o-Y Change in Avg Wages (%)", hlabel="Employment-to-Population Ratio (%)", $
+vmax=4, overlay=line, ovsame, ovcount=1) 2
+# EPOP wagesyoy 2007:3 2019:11
+# EPOP fitted2 2007:3 2019:11
+
+*start of reg 3 
+
+set EPOP2 = EPOP^2
+
+linreg (smpl=samp) wagesyoy startdate enddate resids 
+# constant EPOP EPOP2
+prj fitted2
+
+scatter(style=dots, header="WAGES and EPOP During Expansions (Mar '07 - Nov '19)", $
+vlabel="Y-o-Y Change in Avg Wages (%)", hlabel="Employment-to-Population Ratio (%)", $
+vmax=4, overlay=line, ovsame, ovcount=1) 3
+# EPOP wagesyoy 2007:3 2019:11
+# EPOP EPOP2 2007:3 2019:11
+# EPOP fitted2 2007:3 2019:11
