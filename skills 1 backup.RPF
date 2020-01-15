@@ -36,9 +36,13 @@ scatter(style=dots, header="WAGES", overlay=line, ovsame, ovcount=1) 1
 
 set samp = %if(usrec>0,0,1)
 
-linreg wagesyoy * * resids
-# constant EPOP smpl=samp
+linreg (smpl=samp) wagesyoy * * resids
+# constant EPOP
+prj fitted1
 
-scatter(style=dots, header="WAGES", overlay=line, ovsame, ovcount=1) 1
+scatter(style=dots, header="WAGES", overlay=line, ovsame, ovcount=1) 2
 # EPOP wagesyoy
-# smpl=samp
+# EPOP fitted1
+
+
+*epop fitted for a scatter
