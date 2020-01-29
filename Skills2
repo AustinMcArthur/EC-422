@@ -83,3 +83,10 @@ statistics resids6
 
 compute sic6=(%nreg/%nobs)*(log(%nobs))+log(%rss/%nobs)
 display sic6
+
+
+*Linear forecast
+LINREG CEL startdate enddate resids7
+# Constant TREND seasons {-12 to 0}
+@regactfit
+statistics resids7
