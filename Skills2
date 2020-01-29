@@ -1,0 +1,68 @@
+*https://davegiles.blogspot.com/2013/08/forecasting-from-log-linear-regressions.html
+*all employees: leisure and hospitality: food services and drinking places
+
+calendar(m) 1900:1
+allocate 2025:12
+data(format=fred) * * usrec LNU02000000 
+open data "C:\Users\austi\OneDrive\Desktop\LNS11300062.xls"
+data(format=xls,org=columns) 1950:01 2019:11 lns11300062
+
+table(picture="*.##")
+
+set LFPW = lns11300062
+set CEL = LNU02000000
+set trend = t
+set trend2 = t^2
+seasonal seasons
+
+compute startdate = 1950:1
+compute enddate   = 1995:1
+compute forstart  = 1995:2
+compute forend    = 2005:1
+
+*estimate and forecast linear trend model
+
+linreg LFPW startdate enddate resids1
+#constant trend
+@regactfit
+statistics resids1
+compute sic1=(%nreg/%nobs)*(log(%nobs))+log(%rss/%nobs)
+display sic1
+
+
+*estimate and forecast quadratic trend model
+
+linreg LFPW startdate enddate resids2
+#constant trend trend2
+@regactfit
+
+compute sic2=(%nreg/%nobs)*(log(%nobs))+log(%rss/%nobs)
+display sic2
+
+
+*estimate and forecast log linear trend model version 1
+
+nonlin b0 b1
+frml etrend = b0*exp(b1*trend)
+nlls(frml=etrend) LFPW startdate enddate resids3
+@regactfit
+
+compute sic3=(%nreg/%nobs)*(log(%nobs))+log(%rss/%nobs)
+display sic3
+
+
+*Question 2
+
+compute startdate = 1960:1
+compute enddate = 1995:1
+compute forestart = 1995:2
+compute foreend = 2005:1
+
+linreg CEL startdate enddate resids4
+#constant trend
+@regactfit
+statistics resids1
+compute sic4=(%nreg/%nobs)*(log(%nobs))+log(%rss/%nobs)
+display sic4
+
+
