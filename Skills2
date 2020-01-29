@@ -58,11 +58,28 @@ compute enddate = 1995:1
 compute forestart = 1995:2
 compute foreend = 2005:1
 
+*Linear
 linreg CEL startdate enddate resids4
 #constant trend
 @regactfit
-statistics resids1
+statistics resids4
 compute sic4=(%nreg/%nobs)*(log(%nobs))+log(%rss/%nobs)
 display sic4
 
+*Quadratic
+linreg CEL startdate enddate resids5
+#constant trend trend2
+@regactfit
+statistics resids5
+compute sic5=(%nreg/%nobs)*(log(%nobs))+log(%rss/%nobs)
+display sic5
 
+*Log Linear
+nonlin b0 b1
+frml etrend = b0*exp(b1*trend)
+nlls(frml=etrend) CEL startdate enddate resids6
+@regactfit
+statistics resids6
+
+compute sic6=(%nreg/%nobs)*(log(%nobs))+log(%rss/%nobs)
+display sic6
