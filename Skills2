@@ -56,7 +56,7 @@ display sic3
 compute startdate = 1960:1
 compute enddate = 1995:1
 compute forestart = 1995:2
-compute foreend = 2005:1
+compute forend = 2005:1
 
 *Linear
 linreg CEL startdate enddate resids4
@@ -74,10 +74,11 @@ statistics resids5
 compute sic5=(%nreg/%nobs)*(log(%nobs))+log(%rss/%nobs)
 display sic5
 
+set LogCEL = log(CEL)
+
 *Log Linear
-nonlin b0 b1
-frml etrend = b0*exp(b1*trend)
-nlls(frml=etrend) CEL startdate enddate resids6
+linreg LogCEL startdate enddate resids6
+#constant trend 
 @regactfit
 statistics resids6
 
@@ -87,6 +88,37 @@ display sic6
 
 *Linear forecast
 LINREG CEL startdate enddate resids7
-# Constant TREND seasons {-12 to 0}
+# Constant TREND seasons {-10 to 0}
 @regactfit
 statistics resids7
+
+uforecast(from=enddate+1,to=forend,stderrs=sterr1) fore1
+set upper1 enddate+1 forend = fore1 + 1.96*(sterr1)
+set lower1 enddate+1 forend = fore1 - 1.96*(sterr1)
+
+graph(style=line,overlay=fan,ovcount=2,ovsame) 4
+# CEL
+# fore1
+# upper1
+# lower1
+
+
+compute startdate = 1960:1
+compute enddate = 2007:1
+compute forestart = 2007:2
+compute forend = 2017:2
+
+LINREG CEL startdate enddate resids7
+# Constant TREND seasons {-10 to 0}
+@regactfit
+statistics resids7
+
+uforecast(from=enddate+1,to=forend,stderrs=sterr1) fore1
+set upper1 enddate+1 forend = fore1 + 1.96*(sterr1)
+set lower1 enddate+1 forend = fore1 - 1.96*(sterr1)
+
+graph(style=line,overlay=fan,ovcount=2,ovsame) 4
+# CEL
+# fore1
+# upper1
+# lower1
