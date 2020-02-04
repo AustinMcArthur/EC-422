@@ -1,0 +1,51 @@
+calendar(m) 1900:1
+allocate 2025:12
+data(format=fred) * * EXUSEU
+
+table(picture="*.##")
+
+compute startdate = 1999:1
+compute enddate = 2018:12
+compute forstart = 2019:1
+compute forend = 2019:12
+
+graph(header = "Dollar / Euro Foreign Exchange rate")
+# EXUSEU
+
+LINREG EXUSEU startdate enddate resids
+#constant EXUSEU
+
+linreg EXUSEU startdate enddate resids1
+#constant EXUSEU{1}
+@regactfit
+
+uforecast(from=forstart,to=forend,stderrs=sterr1) fore1
+set upper1 enddate+1 forend = fore1 + 1.96*(sterr1)
+set lower1 enddate+1 forend = fore1 - 1.96*(sterr1)
+
+graph(header = "Dollar to Euro Exchange rate Forecast", style=line,overlay=fan,ovcount=2,ovsame) 4
+# EXUSEU 1999:1 2018:12 2
+# fore1 * * 3
+# upper1 * * 4
+# lower1 * * 4
+
+set LEXUSEU = log(EXUSEU)
+
+linreg LEXUSEU startdate enddate resids3
+# LEXUSEU
+
+
+linreg LEXUSEU startdate enddate resids4
+#constant LEXUSEU{1}
+@regactfit
+@histogram
+
+uforecast(from=forstart,to=forend,stderrs=sterr1) fore1
+set upper2 enddate+1 forend = fore2 + 1.96*(sterr1)
+set lower2 enddate+1 forend = fore2 - 1.96*(sterr1)
+
+graph(header = "Dollar to Euro Exchange rate Forecast (%)", style=line,overlay=fan,ovcount=2,ovsame) 4
+# LEXUSEU 1999:1 2018:12 2
+# fore2 * * 3
+# upper2 * * 4
+# lower2 * * 4
