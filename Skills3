@@ -9,43 +9,56 @@ compute enddate = 2018:12
 compute forstart = 2019:1
 compute forend = 2019:12
 
-graph(header = "Dollar / Euro Foreign Exchange rate")
-# EXUSEU
+@autocorr(header="Dollar to Euro Exchange rate") EXUSEU startdate enddate
 
-LINREG EXUSEU startdate enddate resids
-#constant EXUSEU
+
+set LagEXUSEU = EXUSEU{1}
 
 linreg EXUSEU startdate enddate resids1
-#constant EXUSEU{1}
+#constant LagEXUSEU
 @regactfit
+statistics resids1
+
+@autocorr(header="Dollar to Euro Exchange rate w/lag") LagEXUSEU startdate enddate
+
 
 uforecast(from=forstart,to=forend,stderrs=sterr1) fore1
 set upper1 enddate+1 forend = fore1 + 1.96*(sterr1)
 set lower1 enddate+1 forend = fore1 - 1.96*(sterr1)
 
 graph(header = "Dollar to Euro Exchange rate Forecast", style=line,overlay=fan,ovcount=2,ovsame) 4
-# EXUSEU 1999:1 2018:12 2
+# LagEXUSEU 1999:1 2018:12 2
 # fore1 * * 3
 # upper1 * * 4
 # lower1 * * 4
 
-set LEXUSEU = log(EXUSEU)
+set y = log(EXUSEU)
 
-linreg LEXUSEU startdate enddate resids3
-# LEXUSEU
+set z = y-y{1}
 
+@autocorr(header="Dollar to Euro Exchange rate") z startdate enddate
 
-linreg LEXUSEU startdate enddate resids4
-#constant LEXUSEU{1}
+set Lagz = z{1} 
+
+linreg z startdate enddate resids5
+#constant Lagz
 @regactfit
-@histogram
+statistics resids5
+
+
+@autocorr(header="Dollar to Euro Exchange rate") Lagz startdate enddate
+
+linreg z startdate enddate resids5
+#constant Lagz
+@regactfit
+statistics resids5
 
 uforecast(from=forstart,to=forend,stderrs=sterr1) fore1
-set upper2 enddate+1 forend = fore2 + 1.96*(sterr1)
-set lower2 enddate+1 forend = fore2 - 1.96*(sterr1)
+set upper1 enddate+1 forend = fore1 + 1.96*(sterr1)
+set lower1 enddate+1 forend = fore1 - 1.96*(sterr1)
 
-graph(header = "Dollar to Euro Exchange rate Forecast (%)", style=line,overlay=fan,ovcount=2,ovsame) 4
-# LEXUSEU 1999:1 2018:12 2
-# fore2 * * 3
-# upper2 * * 4
-# lower2 * * 4
+graph(header = "Dollar to Euro Exchange rate Forecast", style=line,overlay=fan,ovcount=2,ovsame) 4
+# Lagz 1999:1 2018:12 2
+# fore1 * * 3
+# upper1 * * 4
+# lower1 * * 4
