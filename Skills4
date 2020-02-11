@@ -49,5 +49,43 @@ set a = log(CPIL)
 set b = a-a{1}
 
 @autocorr(header="Headline CPI (% change)") z startdate enddate
-
 @autocorr(header="Core CPI (% change)") b startdate enddate
+
+
+@bjautofit(pmax=5, qmax=5, crit=sbc) z startdate enddate
+@bjautofit(pmax=5, qmax=5, crit=aic) z startdate enddate
+
+boxjenk(constant,ar=2,ma=3,define=uptmod,maxl) z startdate enddate resids
+@armaroots(equation=uptmod) z startdate enddate
+@regactfit
+@autocorr(header="resids headline CPI") resids startdate enddate
+
+uforecast(equation=uptmod, from=enddate+1,to=forend,stderrs=sterr1) fore1
+set upper1 enddate+1 forend = fore1 + 1.98*(sterr1)
+set lower1 enddate+1 forend = fore1 - 1.98*(sterr1)
+
+graph(Header="Monthly Headline CPI",vlabel="% Change",style=line,overlay=fan,ovcount=2,ovsame) 4
+# z startdate * 2
+# fore1 forstart forend 3
+# upper1 forstart forend 4
+# lower1 forstart forend 4
+
+
+
+@bjautofit(pmax=5, qmax=5, crit=sbc) b startdate enddate
+@bjautofit(pmax=5, qmax=5, crit=aic) b startdate enddate
+
+boxjenk(constant,ar=1,ma=1,define=uptmod,maxl) b startdate enddate resids
+@armaroots(equation=uptmod) b startdate enddate
+@regactfit
+@autocorr(header="resids core CPI") resids startdate enddate
+
+uforecast(equation=uptmod, from=enddate+1,to=forend,stderrs=sterr1) fore1
+set upper1 enddate+1 forend = fore1 + 1.98*(sterr1)
+set lower1 enddate+1 forend = fore1 - 1.98*(sterr1)
+
+graph(Header="Monthly Core CPI",vlabel="% Change",style=line,overlay=fan,ovcount=2,ovsame) 4
+# b startdate * 2
+# fore1 forstart forend 3
+# upper1 forstart forend 4
+# lower1 forstart forend 4
