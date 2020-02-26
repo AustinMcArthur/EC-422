@@ -1,0 +1,133 @@
+calendar(m) 1900:1
+all 2025:12
+data(format=fred,org=columns) * * PAYEMS INDPRO HOUST PPIACO UMCSENT
+
+set trend = t
+SET LINDPRO = log(INDPRO)
+set LPPIACO = log(PPIACO)
+set LPAYEMS = log(PAYEMS)
+
+compute startdate = 1960:1
+compute enddate   = 2020:1
+
+compute burn = 60
+set u = %ran(1.0)
+declare series ar1a ar1b
+set ar1a startdate-burn-1 startdate-burn-1 = 0.0
+set ar1b startdate-burn-1 startdate-burn-1 = 0.0
+set ar1a startdate-burn * = 1 + 1.0*ar1a{1} + u
+set ar1b startdate-burn * = 1 + 0.38*ar1b{1} + 0.5*t + u
+
+spgraph(hfield=3,vfield=1)
+   graph(patterns,style=line,header="real gross domestic product, ln(y)") 1
+   #HOUST * *
+   graph(patterns,style=line,header="1 + 1.0*ar1a{1} + u") 1
+   #ar1a 1960:1 2020:2
+   graph(patterns,style=line,header="1 + 0.38*ar1b{1} + 0.5*t + u") 1
+   #ar1b 1960:1 2020:2
+spgraph(done)
+
+
+
+graph(patterns,style=line) 1
+#HOUST 1960:1 *
+@dfunit(det=constant,method=aic) HOUST 1960:1 *
+set FDHOUST = HOUST - HOUST{1}
+@dfunit(det=constant,method=aic) FDHOUST 1960:1 *
+
+graph(patterns,style=line) 1
+#LPAYEMS 1960:1 *
+@dfunit(det=trend,method=aic) LPAYEMS 1960:1 *
+
+graph(patterns,style=line) 1
+#LINDPRO 1960:1 *
+@dfunit(det=trend,method=aic) LINDPRO 1960:1 *
+
+graph(patterns,style=line) 1
+#LPPIACO 1960:1 *
+@dfunit(det=trend,method=aic) LPPIACO 1960:1 *
+
+graph(patterns,style=line) 1
+#UMCSENT 1960:1 *
+@dfunit(det=constant,method=aic) UMCSENT 1960:1 *
+set FDUMCSENT = UMCSENT - UMCSENT{1}
+@dfunit(det=constant,method=aic) FDUMCSENT 1960:1 *
+
+*Part 2
+
+compute startdate = 1984:1
+compute enddate = 2009:12
+compute forstart = 2010:1
+compute forend = 2014:12
+
+*how do I put the trend in here?
+
+linreg lindpro startdate enddate resids
+#constant trend
+@regactfit
+@bjautofit(pmax=5, qmax=5, crit=sbc) resids startdate enddate
+@bjautofit(pmax=5, qmax=5, crit=aic) resids startdate enddate
+
+boxjenk(constant, ar=5, ma=0, define=uptmod, regressors, max1) lindpro startdate enddate resids
+#trend
+@armaroots(equation=uptmod) resids startdate enddate
+@regactfit
+@autocorr resids
+uforecast(equation=uptmod,nostatic,stderrs=lindproerrors,from=enddate+1,to=forend) lindprofor
+set forupper enddate+1 forend = lindprofor+1.96*lindproerrors
+set forlower enddate+1 forend = lindprofor-1.96*lindproerrors
+
+graph(style=line,vlabel="natural log",header="LINDPRO forecast, actual and forecast", $
+   subheader="arma(5,0) with trend",overaly=fan, ovcount=2, ovsame) 4
+# lindpro enddate-20 forend
+# lindprofor enddate+1 forend
+# forupper enddate+1 forend 3
+# forlower enddate+1 forend 3
+STATISTICS lindprofor
+@autocorr lindprofor
+@histogram2(stats, count) lindprofor
+
+*part 3
+set FDLINDPRO = LINDPRO - LINDPRO{1}
+
+@bjautofit(pmax=5, qmax=5, crit=sbc) FDLINDPRO startdate enddate
+@bjautofit(pmax=5, qmax=5, crit=aic) FDLINDPRO startdate enddate
+
+boxjenk(constant, ar=1, ma=2, diffs=1, define=uptmod2) LINDPRO startdate enddate resids
+@armaroots(equation=uptmod2) FDLINDPRO startdate enddate
+@regactfit
+@autocorr resids
+
+uforecast(equation=uptmod2,nostatic,stderrs=FDlindproerrors,from=enddate+1,to=forend) FDlindprofor
+set forupper enddate+1 forend = FDlindprofor+1.96*FDlindproerrors
+set forlower enddate+1 forend = FDlindprofor-1.96*FDlindproerrors
+
+graph(style=line,vlabel="natural log",header="FDLINDPRO forecast, actual and forecast", $
+   subheader="arima(1,2,1) with trend",overlay=fan, ovcount=2, ovsame) 4
+# lindpro enddate-20 forend
+# FDlindprofor enddate+1 forend
+# forupper enddate+1 forend 3
+# forlower enddate+1 forend 3
+STATISTICS FDlindprofor
+
+graph(style=line,vlabel="natural log", key=below,header="LINDPRO, actual and forecast", $
+	klabel=||"LINDPRO"|"arima(1,2,1)"|"arma(5,0) with trend"||,subheader="forecast comparison") 3
+# LINDPRO enddate-20 forend
+# lindprofor enddate+1 forend
+# FDlindprofor enddate+1 forend
+
+@gnewbold LINDPRO  lindprofor fdlindprofor
+* @gnewbold assumes forecast errors serially uncorrelated
+set error1 = lindprofor - lindpro
+set error2 = fdlindprofor - lindpro
+@autocorr error1
+@autocorr error2
+
+set twodiff = fdlindprofor - lindprofor{1}
+
+@dmariano(lags=4,lwindow=newey) lindpro  lindprofor fdlindprofor
+* note @dmariano not for nested models two models are nested if one model contains
+* all the terms of the other, and at least one additional term.  what about a
+* second unit root? look at data
+graph(patterns,style=line,vlabel="second difference of natural log", header="real gross domestic product") 1
+#twodiff startdate enddate
