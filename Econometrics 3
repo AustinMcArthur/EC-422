@@ -1,0 +1,123 @@
+calendar(m) 1900:1
+all 2025:12
+data(format=fred,org=columns) * * RSXFS
+
+compute startdate = 2010:1
+compute enddate   = 2020:1
+compute forstart = 2016:1
+compute forend = 2020:1
+
+set retail = RSXFS
+set lretail = log(RSXFS)
+set trend = t
+set ltrend = log(trend)
+
+*Forecast of old years
+linreg lretail startdate enddate resids
+#constant ltrend
+@regactfit
+
+linreg retail startdate enddate resids2
+#constant trend
+
+boxjenk(constant, ar=2, ma=2, define=uptmod, regressors) lretail startdate enddate resids
+#trend
+@armaroots(equation=uptmod) resids startdate enddate
+@regactfit
+@autocorr resids
+
+uforecast(equation=uptmod,nostatic,stderrs=lretailerrors,from=forstart,to=forend) lretailfor
+set forupper forstart forend = lretailfor+1.96*lretailerrors
+set forlower forstart forend = lretailfor-1.96*lretailerrors
+
+graph(style=line,vlabel="natural log",header="LRETAIL forecast, actual and forecast", $
+   subheader="arma(2,2) with trend",overlay=fan, ovcount=2, ovsame) 4
+# lretail startdate enddate 
+# lretailfor forstart forend
+# forupper forstart forend 3
+# forlower forstart forend 3
+
+set retailfor = EXP(lretailfor)
+set retailerrors = EXP(lretailerrors)
+set forupper2 = EXP(forupper)
+set forlower2 = EXP(forlower)
+
+
+graph(style=line,vlabel="Millions of Dollars",header="Retail Sales Excluding Food Services forecast", $
+   subheader="arma(2,2) with trend",overlay=fan, ovcount=2, ovsame) 4
+# retail startdate enddate
+# retailfor forstart forend
+# forupper2 forstart forend 3
+# forlower2 forstart forend 3
+
+*Recreate old consultant forecast
+
+linreg retail startdate enddate resids5
+#constant trend
+@regactfit
+@autocorr startdate enddate
+
+uforecast(from=forstart,to=forend,stderrs=sterr2) fore2
+set upper2 enddate+1 forend = fore2 + 1.96*(sterr2)
+set lower2 enddate+1 forend = fore2 - 1.96*(sterr2)
+
+graph(header = "Old Consultant Forecast",vlabel="Millions of Dollars", style=line,overlay=fan,ovcount=2,ovsame) 4
+#retail startdate enddate 1
+#fore2 forstart forend 2
+#upper2 forstart forend 4
+#lower2 forstart forend 4
+
+@gnewbold retail retailfor fore2
+
+set fdretail = retail - retail{1}
+set twodiff = retail {1} - retail{2}
+
+@dmariano(lags=4,lwindow=newey) retail retailfor fore2
+
+STATISTICS retailfor
+STATISTICS fore2
+
+*new forecast
+linreg lretail startdate enddate resids
+#constant trend
+@regactfit
+@bjautofit(pmax=5, qmax=5, crit=sbc) resids startdate enddate
+@bjautofit(pmax=5, qmax=5, crit=aic) resids startdate enddate
+
+
+boxjenk(constant, ar=2, ma=2, define=uptmod, regressors) lretail startdate enddate resids
+#trend
+@armaroots(equation=uptmod) resids startdate enddate
+@regactfit
+@autocorr resids
+
+
+compute startdate = 1992:1
+compute enddate   = 2020:1
+compute forstart = 2020:1
+compute forend = 2024:2
+
+uforecast(equation=uptmod,nostatic,stderrs=lretailerrors,from=forstart,to=forend) lretailfor
+set forupper forstart forend = lretailfor+1.96*lretailerrors
+set forlower forstart forend = lretailfor-1.96*lretailerrors
+
+graph(style=line,vlabel="natural log",header="LRETAIL forecast, actual and forecast", $
+   subheader="arma(2,2) with trend",overlay=fan, ovcount=2, ovsame) 4
+# lretail enddate-20 forend
+# lretailfor forstart forend
+# forupper forstart forend 3
+# forlower forstart forend 3
+
+set retailfor = EXP(lretailfor)
+set retailerrors = EXP(lretailerrors)
+set forupper2 = EXP(forupper)
+set forlower2 = EXP(forlower)
+
+
+graph(style=line,vlabel="Millions of Dollars",header="Retail Sales Excluding Food Services forecast", $
+   subheader="arma(2,2) with trend",overlay=fan, ovcount=2, ovsame) 4
+# retail enddate-20 forend
+# retailfor forstart forend
+# forupper2 forstart forend 3
+# forlower2 forstart forend 3
+STATISTICS retailfor
