@@ -1,0 +1,82 @@
+calendar(m) 1900:1
+all 2020:12
+data(format=fred,org=columns) * * PAYEMS usrec temphelps BAA GS10
+*
+table(picture="*.##")
+*
+set lpay = log(payems)
+set ltemp = log(temphelps)
+
+graph(header="Employment and Temp employment",key=upright,overlay=line, ovcount=1) 2
+# payems 1990:1 *
+# temphelps 1990:1 *
+*
+@dfunit(det=trend,method=aic) payems 1992:1 2020:1
+@dfunit(det=trend,method=aic) temphelps 1992:1 2020:1
+*
+linreg(define=coint) temphelps 1992:1 2020:1 resids
+#constant payems
+*
+graph(header="residuals of cointegrationg relationship") 1
+# resids 1992:1 2020:1
+*
+**engle granger cointegraion tests***
+**
+@egtestresids(maxlags=10,method=aic,det=none) resids 1992:1 2020:1
+
+graph(header="10 Year bonds and Corporate bonds",key=upright,overlay=line, ovcount=1, shading=usrec) 2
+# BAA 1960:1 2020:2
+# GS10 1960:1 2020:2
+
+@dfunit(det=constant,method=aic) BAA 1960:1 2020:2
+@dfunit(det=constant,method=aic) GS10 1960:1 2020:2
+*
+
+@egtestresids(maxlags=10,method=aic,det=none) resids2 1992:1 2020:1
+
+linreg(define=coint) BAA 1960:1 2020:2 resids2
+#constant GS10
+*
+
+@varlagselect(lags=24, crit=aic)  1960:1 2020:2
+# BAA GS10
+
+
+system(model=cointex)
+variables BAA GS10
+lags 1 to 7
+det constant
+ect coint
+end(system)
+estimate 1960:1 2020:2
+*
+compute implabel = ||"BAA","GS10"||
+@montevar(model=cointex,steps=25,varlabels=implabel,header="impulse response functions")
+*
+forecast(model=cointex,from=2020:2,to=2022:2,results=fore1,stderrors=serrors1)
+set uppercon95 2020:2 2022:3 = fore1(2) + %invnormal(0.975)*serrors1(2)
+set lowercon95 2020:2 2022:3 = fore1(2) - %invnormal(0.975)*serrors1(2)
+set uppercon68 2020:2 2022:3 = fore1(2) + %invnormal(0.841)*serrors1(2)
+set lowercon68 2020:2 2022:3 = fore1(2) - %invnormal(0.841)*serrors1(2)
+*
+set upperinc95 2020:2 2022:3 = fore1(1) + %invnormal(0.975)*serrors1(1)
+set lowerinc95 2020:2 2022:3 = fore1(1) - %invnormal(0.975)*serrors1(1)
+set upperinc68 2020:2 2022:3 = fore1(1) + %invnormal(0.841)*serrors1(1)
+set lowerinc68 2020:2 2022:3 = fore1(1) - %invnormal(0.841)*serrors1(1)
+
+graph(style=line, header="BAA forecast", overlay=fan,ovcount=4,ovsame) 6
+# BAA 2000:1 2020:2
+# fore1(1) 2020:2 2022:3 2
+# upperinc95 2020:2 2022:3 4
+# upperinc68 2020:2 2022:3
+# lowerinc68 2020:2 2022:3
+# lowerinc95 2020:2 2022:3
+*
+*
+graph( header="10 Year Bond interest rate forecast", overlay=fan,ovcount=4,ovsame) 6
+# gs10 2000:1 2020:2
+# fore1(2) 2020:2 2022:3 2
+# uppercon95 2020:2 2022:3 4
+# uppercon68 2020:2 2022:3
+# lowercon68 2020:2 2022:3
+# lowercon95 2020:2 2022:3
